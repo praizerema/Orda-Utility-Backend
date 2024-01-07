@@ -1,0 +1,45 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install Dependencies
+      run: yarn
+
+    - name: Run Tests
+      run: yarn test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install Heroku CLI
+      run: yarn add -g heroku
+
+    - name: Deploy to Heroku
+      run: heroku login && git push https://heroku:$HEROKU_API_KEY@git.heroku.com/git.heroku.com/ordautility.git development
+      env:
+        HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
