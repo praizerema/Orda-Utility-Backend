@@ -19,7 +19,7 @@ jobs:
         node-version: 18.10.0
 
     - name: Install Dependencies
-      run: yarn add
+      run: yarn
 
     - name: Run Tests
       run: yarn test
