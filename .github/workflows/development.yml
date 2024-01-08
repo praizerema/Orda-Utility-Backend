@@ -34,13 +34,13 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: 18.10.0
+        node-version: 16
    
     - name: Install Dependencies
       run: yarn
 
     - name: Install Heroku CLI
-      run: yarn add -g heroku
+      run: yarn global add heroku
 
     - name: Deploy to Heroku
       run: heroku login && git push https://heroku:$HEROKU_API_KEY@git.heroku.com/git.heroku.com/ordautility.git development
