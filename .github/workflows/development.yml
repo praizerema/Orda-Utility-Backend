@@ -19,7 +19,7 @@ jobs:
         node-version: 18.10.0
 
     - name: Install Dependencies
-      run: yarn
+      run: yarn add
 
     - name: Run Tests
       run: yarn test
@@ -31,8 +31,8 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Set up Node.js and Heroku CLI
+      uses: heroku/nodejs@v0.5
       with:
         node-version: 18.10.0
 
