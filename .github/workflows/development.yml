@@ -43,6 +43,8 @@ jobs:
       run: yarn global add heroku
 
     - name: Deploy to Heroku
-      run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/ordautility.git development
+      run: |
+        git remote add heroku https://git.heroku.com/ordautility.git
+        git push --force heroku development:main
       env:
         HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
