@@ -10,8 +10,6 @@ const password = encodeURIComponent('GAYcbCWJ8HAM8eag');
   imports: [
     MongooseModule.forRoot(
       `mongodb+srv://eremapraiz:${password}@cluster0.olop2wc.mongodb.net/?retryWrites=true&w=majority`,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     ),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), // Add this line
     AuthModule,
