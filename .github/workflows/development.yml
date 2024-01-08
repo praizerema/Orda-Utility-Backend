@@ -44,7 +44,6 @@ jobs:
 
     - name: Deploy to Heroku
       run: |
-        git remote add heroku https://git.heroku.com/ordautility.git
-        git push --force heroku development:main
+        git push https://git.heroku.com/ordautility.git ${{ github.event_name == 'push' && github.ref == 'refs/heads/development' && 'development:main' || github.ref }} --force
       env:
         HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
