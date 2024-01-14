@@ -6,11 +6,12 @@ import { Model } from 'mongoose';
 import { Bid } from './bid.schema';
 import { CreateBidDto } from './dto/creat-bid.dto';
 import { User } from 'src/auth/user.schema';
+import { Request } from 'express';
 
 export interface ApiResponse<T = any> {
   statusCode: number;
   message: string;
-  data?: T;
+  data?: T | null;
 }
 
 @Injectable()
@@ -39,13 +40,25 @@ export class BidService {
     }
   }
 
-  async getBidHistory(): Promise<ApiResponse<Bid[]>> {
+  async getBids(req: Request): Promise<ApiResponse<Bid[] | undefined>> {
     try {
-      const bids = await this.bidModel.find().exec();
+      const userId = req.headers.user_id;
+      const bids = await this.bidModel.find({ user: userId }).exec();
+
+      if (!bids || bids.length === 0) {
+        return {
+          statusCode: 200,
+          message: 'No bids found for the user',
+          data: [],
+        };
+      }
+
+      const bidsArray = bids.map((bid) => bid.toObject());
+
       return {
         statusCode: 200,
         message: 'Bids fetched successfully',
-        data: bids,
+        data: bidsArray,
       };
     } catch (error) {
       // Handle errors and return an appropriate response

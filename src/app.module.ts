@@ -2,7 +2,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { UserSchema } from './auth/user.model';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BidModule } from './bid/bid.module';
@@ -11,6 +10,7 @@ import { AuthService } from './auth/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { CorsOptions } from 'cors';
 import * as cors from 'cors';
+import { UserSchema } from './auth/user.schema';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),

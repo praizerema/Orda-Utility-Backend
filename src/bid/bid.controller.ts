@@ -12,8 +12,9 @@ import { ApiResponse, BidService } from './bid.service';
 import { Bid } from './bid.schema';
 import { CreateBidDto } from './dto/creat-bid.dto';
 import { User } from 'src/auth/user.schema';
+import { Request } from 'express';
 
-@Controller('auth')
+@Controller('api/auth')
 export class BidController {
   constructor(private bidService: BidService) {}
 
@@ -29,9 +30,9 @@ export class BidController {
     return this.bidService.placeBid(bid, req.user as User);
   }
 
-  @Get('bids/history')
+  @Get('bids')
   @UseGuards(JwtAuthGuard)
-  async getBidHistory(): Promise<ApiResponse<Bid[]>> {
-    return this.bidService.getBidHistory();
+  async getBids(@Req() req: Request): Promise<ApiResponse<Bid[] | undefined>> {
+    return this.bidService.getBids(req);
   }
 }

@@ -22,7 +22,7 @@ export class AuthService {
   async signup(user: AuthSignUpDto): Promise<any> {
     // Check if the email is already taken
     try {
-      const { email, password } = user;
+      const { email, first_name, last_name, password } = user;
       const existingUser = await this.userModel.findOne({ email }).exec();
       if (existingUser) {
         throw new ForbiddenException('Email already in use');
@@ -32,7 +32,12 @@ export class AuthService {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create a new user instance with the hashed password
-      const newUser = new this.userModel({ email, password: hashedPassword });
+      const newUser = new this.userModel({
+        email,
+        first_name,
+        last_name,
+        password: hashedPassword,
+      });
 
       // Save the new user to the database
       const savedUser = await newUser.save();
@@ -68,8 +73,6 @@ export class AuthService {
       const existingUser = await this.validateUser(email);
       // if user does not exist, throw exception
       if (!existingUser) {
-        console.log('user missmatch');
-
         throw new ForbiddenException('User does not exist');
       }
       // compare password
@@ -77,21 +80,22 @@ export class AuthService {
 
       // if password incorrect, throw exception
       if (!pwMatches) {
-        console.log('Password missmatch');
-
         throw new ForbiddenException('Invalid login credentials');
       }
 
       const access_token = this.jwtService.sign({ id: existingUser._id });
-
+      const userData = {
+        last_name: existingUser.first_name,
+        first_name: existingUser.last_name,
+        email: existingUser.email,
+        _id: existingUser._id,
+      };
       return {
         statusCode: 200,
         message: 'User created successfully',
-        data: { access_token },
+        data: { access_token, user: userData },
       };
     } catch (error) {
-      // Handle errors and return an appropriate response
-      console.log(error);
       return {
         statusCode:
           error instanceof ForbiddenException ? 403 : error.response.statusCode,
