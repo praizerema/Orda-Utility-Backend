@@ -1,24 +1,29 @@
 // user.controller.ts
-import { Body, Controller, Post } from '@nestjs/common';
-// import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthSignUpDto, AuthSignInDto } from './dto';
-// import { User } from './user.model';
 
 @Controller('auth')
 export class UserController {
   constructor(private authService: AuthService) {}
 
-  //   @UseGuards(AuthGuard('local'))
   @Post('signin')
-  async signin(@Body() userObj: AuthSignInDto) {
-    return this.authService.signin(userObj);
+  async signin(
+    @Body() userObj: AuthSignInDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const response = await this.authService.signin(userObj);
+
+    (res.status as any)(response.statusCode).json(response);
   }
 
   @Post('signup')
-  async signup(@Body() signUpDto: AuthSignUpDto) {
-    const user = await this.authService.signup(signUpDto);
+  async signup(
+    @Body() signUpDto: AuthSignUpDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const response = await this.authService.signup(signUpDto);
 
-    return user;
+    (res.status as any)(response.statusCode).json(response);
   }
 }

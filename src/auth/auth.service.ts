@@ -49,7 +49,7 @@ export class AuthService {
     } catch (error) {
       // Handle errors and return an appropriate response
       return {
-        statusCode: error instanceof UnauthorizedException ? 401 : 500,
+        statusCode: error instanceof ForbiddenException ? 403 : 500,
         message: error.message || 'Internal server error',
       };
     }
@@ -68,6 +68,8 @@ export class AuthService {
       const existingUser = await this.validateUser(email);
       // if user does not exist, throw exception
       if (!existingUser) {
+        console.log('user missmatch');
+
         throw new ForbiddenException('User does not exist');
       }
       // compare password
@@ -75,6 +77,8 @@ export class AuthService {
 
       // if password incorrect, throw exception
       if (!pwMatches) {
+        console.log('Password missmatch');
+
         throw new ForbiddenException('Invalid login credentials');
       }
 
@@ -87,8 +91,10 @@ export class AuthService {
       };
     } catch (error) {
       // Handle errors and return an appropriate response
+      console.log(error);
       return {
-        statusCode: error instanceof UnauthorizedException ? 401 : 500,
+        statusCode:
+          error instanceof ForbiddenException ? 403 : error.response.statusCode,
         message: error.message || 'Internal server error',
       };
     }

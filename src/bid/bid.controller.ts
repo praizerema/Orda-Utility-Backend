@@ -24,7 +24,6 @@ export class BidController {
     @Req() req: Express.Request,
     // @Res() res: Express.Request,
   ): Promise<ApiResponse<Bid>> {
-
     bid.start_time = new Date(bid.start_time);
     bid.close_time = new Date(bid.close_time);
     return this.bidService.placeBid(bid, req.user as User);
