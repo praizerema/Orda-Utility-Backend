@@ -1,29 +1,29 @@
 // user.controller.ts
-import { Body, Controller, Post } from '@nestjs/common';
-// import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, AuthSignInDto } from './dto';
-// import { User } from './user.model';
+import { AuthSignUpDto, AuthSignInDto } from './dto';
 
-@Controller('auth')
+@Controller('api/auth')
 export class UserController {
   constructor(private authService: AuthService) {}
 
-  //   @UseGuards(AuthGuard('local'))
   @Post('signin')
-  async signin(@Body() userObj: AuthSignInDto) {
-    return this.authService.signin(userObj);
+  async signin(
+    @Body() userObj: AuthSignInDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const response = await this.authService.signin(userObj);
+
+    (res.status as any)(response.statusCode).json(response);
   }
 
   @Post('signup')
-  async signup(@Body() createUser: AuthDto) {
-    // console.log(req.body);
-    // Assuming CreateUserDto has properties like 'username' and 'password'
-    const user = await this.authService.signup(createUser);
-    // return user;
-    // You may choose to log the user in automatically after signing up
-    const loginResult = await this.authService.signin(user);
+  async signup(
+    @Body() signUpDto: AuthSignUpDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const response = await this.authService.signup(signUpDto);
 
-    return loginResult;
+    (res.status as any)(response.statusCode).json(response);
   }
 }
